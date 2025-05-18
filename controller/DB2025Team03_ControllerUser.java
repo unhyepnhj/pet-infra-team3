@@ -160,7 +160,7 @@ public class DB2025Team03_ControllerUser {
         return null;
     }
     //email로 검색색
-        public List<DB2025Team03_ModelUser> searchByEmail(String email) {
+        public List<DB2025Team03_ModelUser> searchByEmailDB2025Team03(String email) {
         String sql = "SELECT * FROM DB2025_User WHERE email LIKE ?";
         List<DB2025Team03_ModelUser> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -176,7 +176,7 @@ public class DB2025Team03_ControllerUser {
         return list;
     }
     //동명이인 구분분
-    public DB2025Team03_ModelUser searchByNameAndBirthYear(String name, int birthYear) {
+    public DB2025Team03_ModelUser searchByNameAndBirthYearDB2025Team03(String name, int birthYear) {
         String sql = "SELECT * FROM DB2025_User WHERE name = ? AND birth_year = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
