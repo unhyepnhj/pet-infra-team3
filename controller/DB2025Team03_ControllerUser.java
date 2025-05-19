@@ -54,7 +54,7 @@ public class DB2025Team03_ControllerUser {
             conn.setAutoCommit(false);
             ps.setInt(1, user_id);
             ps.setString(2, name);
-            ps.setString(3, birth_year);
+            ps.setInt(3, birth_year);	// setString -> setInt 수정
             ps.setString(4, gender);
             ps.setString(5, email);
             ps.executeUpdate();
