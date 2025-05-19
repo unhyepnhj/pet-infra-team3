@@ -5,51 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.DB2025Team03_ModelReview;
-
-class DB2025Team03_ModelReview {
-    private int reviewId;
-    private int userId;
-    private int facilityId;
-    private int rating;
-    private String content;
-    private Date date;
-
-    public DB2025Team03_ModelReview(int reviewId, int userId, int facilityId, int rating, String content, Date date) {
-        this.reviewId = reviewId;
-        this.userId = userId;
-        this.facilityId = facilityId;
-        this.rating = rating;
-        this.content = content;
-        this.date = date;
-    }
-
-    // Getter
-    public int getReviewId() { return reviewId; }
-    public int getUserId() { return userId; }
-    public int getFacilityId() { return facilityId; }
-    public int getRating() { return rating; }
-    public String getContent() { return content; }
-    public Date getDate() { return date; }
-}
-
-class DB2025Team03_ModelReviewWithUser {
-    private String userName;
-    private int rating;
-    private String content;
-    private Date date;
-
-    public DB2025Team03_ModelReviewWithUser(String userName, int rating, String content, Date date) {
-        this.userName = userName;
-        this.rating = rating;
-        this.content = content;
-        this.date = date;
-    }
-
-    public String getUserName() { return userName; }
-    public int getRating() { return rating; }
-    public String getContent() { return content; }
-    public Date getDate() { return date; }
-}
+import model.DB2025Team03_ModelReviewWithUser;
 
 public class DB2025Team03_ControllerReview {
     private Connection conn;
