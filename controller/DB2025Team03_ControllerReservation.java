@@ -13,7 +13,7 @@ public class DB2025Team03_ControllerReservation {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/db2025team03",
                 "root",
-                "eeeeeeee" 
+                "root" 
             );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
@@ -102,4 +102,29 @@ public class DB2025Team03_ControllerReservation {
         }
         return list;
     }
+    
+    // 2025.05.25 수정 - UserId로 예약 내역 검색
+    public List<DB2025Team03_ModelReservation> searchByUserId(int userId) {
+        List<DB2025Team03_ModelReservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM DB2025_Reservation WHERE user_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new DB2025Team03_ModelReservation(
+                        rs.getInt("reservation_id"),
+                        rs.getInt("user_id"),
+                        rs.getInt("facility_id"),
+                        rs.getDate("date").toString(),   // 수정됨
+                        rs.getString("service_type")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("[ERROR] 예약 조회 중 오류 발생");
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
