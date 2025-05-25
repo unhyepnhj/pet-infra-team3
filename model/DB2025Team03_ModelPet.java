@@ -58,13 +58,7 @@ public class DB2025Team03_ModelPet {
 
     @Override
     public String toString() {
-        return "DB2025Team03_ModelPet{" +
-                "petId=" + petId +
-                ", userId=" + userId +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", species='" + species + '\'' +
-                '}';
-        
+    // 2025.05.25 수정 - 출력 format 변경(기존 DB2025Team03_Pet{userID: ~~ 이런 식이었음)
+    return String.format("%-7d %-8d %-10s %-4d %-10s", petId, userId, name, age, species);
     }
 }
