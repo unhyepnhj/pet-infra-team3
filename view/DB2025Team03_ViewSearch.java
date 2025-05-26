@@ -104,6 +104,8 @@ public class DB2025Team03_ViewSearch {
     private void showResults(List<DB2025Team03_ModelFacility> results) {
         JTextArea ta = new JTextArea(20, 60);
         ta.setEditable(false);
+       
+        
 
         if (results.isEmpty()) {
             ta.setText("조회된 시설이 없습니다.");
@@ -141,3 +143,4 @@ public class DB2025Team03_ViewSearch {
         });
     }
 }
+
