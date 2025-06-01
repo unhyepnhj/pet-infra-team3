@@ -1,4 +1,4 @@
-/* 
+* 
   DB2025Team03 데이터베이스 및 사용자 생성 스크립트 
   root 계정으로 실행해야 함 
 */
@@ -46,6 +46,15 @@ CREATE TABLE DB2025_Facility (
     opening_hours VARCHAR(50)
 );
 
+/*수정중.. 예약 slot 테이블*/
+CREATE TABLE DB2025_Slot (
+    slot_id INT PRIMARY KEY,
+    facility_id INT NOT NULL,
+    time_range VARCHAR(50) NOT NULL,
+    is_reserved BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
+);
+
 /* 예약 테이블 */
 CREATE TABLE DB2025_Reservation (
     reservation_id INT PRIMARY KEY,
@@ -53,8 +62,10 @@ CREATE TABLE DB2025_Reservation (
     facility_id INT NOT NULL,
     date DATE NOT NULL,
     service_type VARCHAR(50) NOT NULL,
+    slot_id INT, 
     FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
-    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id),
+    FOREIGN KEY (slot_id) REFERENCES DB2025_Slot(slot_id)
 );
 
 /* 리뷰 테이블 */
@@ -95,6 +106,14 @@ INSERT INTO DB2025_Pet VALUES
 (3, 2, '루비', 4, '강아지'),
 (4, 3, '하늘', 1, '고양이'),
 (5, 4, '보리', 5, '강아지');
+
+/*예약 slot 데이터 추가*/
+INSERT INTO DB2025_Slot (slot_id, facility_id, time_range) VALUES
+(1, 101, '09:00~10:00'),
+(2, 101, '10:00~11:00'),
+(3, 101, '11:00~12:00'),
+(4, 101, '13:00~14:00'),
+(5, 101, '14:00~15:00');
 
 /*
 데이터 출처:
@@ -154,11 +173,11 @@ INSERT INTO DB2025_Facility (facility_id, name, address, category, opening_hours
 (510, '에스크투데이', '서울 서대문구 연희동 191-4 2층', '카페', '12:00-21:00');
 
 INSERT INTO DB2025_Reservation VALUES
-(1, 1, 101, '2025-05-10', '진료'),
-(2, 2, 102, '2025-05-11', '미용'),
-(3, 3, 103, '2025-05-11', '음료'),
-(4, 1, 105, '2025-05-12', '숙박'),
-(5, 5, 101, '2025-05-13', '진료');
+(1, 1, 101, '2025-05-10', '진료',1),
+(2, 2, 102, '2025-05-11', '미용',2),
+(3, 3, 103, '2025-05-11', '음료',3),
+(4, 1, 105, '2025-05-12', '숙박',4),
+(5, 5, 101, '2025-05-13', '진료',5);
 
 INSERT INTO DB2025_Review VALUES
 (1, 1, 101, 5, '좋았어요', '2025-05-10'),
