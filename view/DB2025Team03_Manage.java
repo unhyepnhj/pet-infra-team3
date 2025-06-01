@@ -6,6 +6,7 @@ import model.DB2025Team03_ModelPet;
 import model.DB2025Team03_ModelReservation;
 
 import java.util.List;
+import controller.DB2025Team03_ControllerReservationSlot;
 
 /*
  * 관리 기능
@@ -16,10 +17,12 @@ import java.util.List;
 public class DB2025Team03_Manage {
     DB2025Team03_ControllerPet petController;
     DB2025Team03_ControllerReservation reservationController;
+    DB2025Team03_ControllerReservationSlot slotController;
 
     public DB2025Team03_Manage() {
         petController = new DB2025Team03_ControllerPet();
         reservationController = new DB2025Team03_ControllerReservation();
+        slotController = new DB2025Team03_ControllerReservationSlot();
     }
     
 // 1) userId별 반려동물 관리(등록, 조회, 수정, 삭제)
@@ -68,5 +71,12 @@ public class DB2025Team03_Manage {
                 System.out.println(res);
             }
         }
+    }
+    
+ //예약 등록
+    public void registerReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
+        reservationController.insertReservation(reservationId, userId, facilityId, date, serviceType, slotId);
+        slotController.markSlotAsReserved(slotId); //슬롯 상태 업데이트
+        System.out.println("✅ 예약이 완료되었습니다.");
     }
 }
