@@ -10,10 +10,11 @@ public class DB2025Team03_ControllerReservation {
 
     public DB2025Team03_ControllerReservation() {
         try {
+        	//Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db2025team03",
+                "jdbc:mysql://localhost:3306/DB2025team03",
                 "root",
-                "root" 
+                "" 
             );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
@@ -22,14 +23,15 @@ public class DB2025Team03_ControllerReservation {
     }
 
     // INSERT
-    public void insertReservation(int reservationId, int userId, int facilityId, String date, String serviceType) {
-        String sql = "INSERT INTO DB2025_Reservation VALUES (?, ?, ?, ?, ?)";
+    public void insertReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
+        String sql = "INSERT INTO DB2025_Reservation VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, reservationId);
             ps.setInt(2, userId);
             ps.setInt(3, facilityId);
             ps.setString(4, date);
             ps.setString(5, serviceType);
+            ps.setInt(6, slotId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,7 +63,8 @@ public class DB2025Team03_ControllerReservation {
                     rs.getInt("user_id"),
                     rs.getInt("facility_id"),
                     rs.getDate("date").toString(),
-                    rs.getString("service_type")
+                    rs.getString("service_type"),
+                    rs.getInt("slot_id")
                 );
                 list.add(r);
             }
@@ -94,7 +97,8 @@ public class DB2025Team03_ControllerReservation {
                     rs.getInt("user_id"),
                     rs.getInt("facility_id"),
                     rs.getString("date"),
-                    rs.getString("service_type")
+                    rs.getString("service_type"),
+                    rs.getInt("slot_id")
                 ));
             }
         } catch (SQLException e) {
@@ -116,7 +120,8 @@ public class DB2025Team03_ControllerReservation {
                         rs.getInt("user_id"),
                         rs.getInt("facility_id"),
                         rs.getDate("date").toString(),   // 수정됨
-                        rs.getString("service_type")
+                        rs.getString("service_type"),
+                        rs.getInt("slot_id")
                     ));
                 }
             }
@@ -124,6 +129,11 @@ public class DB2025Team03_ControllerReservation {
             System.out.println("[ERROR] 예약 조회 중 오류 발생");
             e.printStackTrace();
         }
+        return list;
+    }
+
+}
+
         return list;
     }
 
