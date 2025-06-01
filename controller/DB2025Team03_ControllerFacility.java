@@ -13,7 +13,7 @@ public class DB2025Team03_ControllerFacility {
         try {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DB2025Team03",
-                "root",
+                "DB2025Team03", //오류가 나서 root 대신 바꿨습니다.
                 "DB2025Team03"
             );
             conn.setAutoCommit(true);
@@ -198,4 +198,27 @@ public class DB2025Team03_ControllerFacility {
             rs.getString("opening_hours")
         );
     }
+    
+    //평균 평점 조회(검색을 위해서 추가 했어요!)
+    public List<DB2025Team03_ModelFacility> searchByMinAvgRatingDB2025Team03(double minRating) {
+        String sql =
+          "SELECT F.* " +
+          "FROM DB2025_View_TopRatedFacility V " +
+          "JOIN DB2025_Facility F ON V.facility_id = F.facility_id " +
+          "WHERE V.avg_rating >= ?";
+        List<DB2025Team03_ModelFacility> list = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, minRating);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
+
