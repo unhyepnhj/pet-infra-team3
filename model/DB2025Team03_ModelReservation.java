@@ -6,6 +6,7 @@ public class DB2025Team03_ModelReservation {
     private int facilityId;
     private String date;
     private String serviceType;
+    private int slotId;
 
     public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType) {
         this.reservationId = reservationId;
@@ -13,6 +14,15 @@ public class DB2025Team03_ModelReservation {
         this.facilityId = facilityId;
         this.date = date;
         this.serviceType = serviceType;
+    }
+    
+    public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
+        this.reservationId = reservationId;
+        this.userId = userId;
+        this.facilityId = facilityId;
+        this.date = date;
+        this.serviceType = serviceType;
+        this.slotId = slotId;
     }
 
     public int getReservationId() {
@@ -54,6 +64,10 @@ public class DB2025Team03_ModelReservation {
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
     }
+    
+    public int getSlotId() {
+        return slotId;
+    }
 
     @Override
     public String toString() {
@@ -63,7 +77,10 @@ public class DB2025Team03_ModelReservation {
                 ", facilityId=" + facilityId +
                 ", date='" + date + '\'' +
                 ", serviceType='" + serviceType + '\'' +
+                ", slotId=" + slotId +
                 '}';
     }
 }
+
+
 
