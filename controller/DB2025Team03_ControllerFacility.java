@@ -13,8 +13,8 @@ public class DB2025Team03_ControllerFacility {
         try {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DB2025Team03",
-                "DB2025Team03", //오류가 나서 root 대신 바꿨습니다.
-                "DB2025Team03"
+                "root",
+                "root"
             );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
@@ -156,11 +156,10 @@ public class DB2025Team03_ControllerFacility {
         return list;
     } // end of searchByCategory
     public List<DB2025Team03_ModelFacility> searchByOpeningBeforeDB2025Team03(String opening_hours) { // 시설 오픈 시간으로 검색
-        String sql = "SELECT * FROM DB2025_Facility WHERE LEFT(opening_hours, 5) <= ? AND SUBSTRING(opening_hours, 7, 5) >= ?";	//검색한 시간에 여는 시설
+        String sql = "SELECT * FROM DB2025_Facility WHERE opening_hours < ?";	// time시 이전에 여는 시설
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, opening_hours);
-            ps.setString(2, opening_hours);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapRow(rs));

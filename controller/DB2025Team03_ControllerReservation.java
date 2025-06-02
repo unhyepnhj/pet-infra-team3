@@ -11,11 +11,11 @@ public class DB2025Team03_ControllerReservation {
     public DB2025Team03_ControllerReservation() {
         try {
         	//Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025team03",
-                "root",
-                "" 
-            );
+        	conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
+                    "root",
+                    "root"
+                );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,7 +119,7 @@ public class DB2025Team03_ControllerReservation {
                         rs.getInt("reservation_id"),
                         rs.getInt("user_id"),
                         rs.getInt("facility_id"),
-                        rs.getDate("date").toString(),   // 수정됨
+                        rs.getDate("date").toString(),
                         rs.getString("service_type"),
                         rs.getInt("slot_id")
                     ));
@@ -131,10 +131,4 @@ public class DB2025Team03_ControllerReservation {
         }
         return list;
     }
-
-}
-
-        return list;
-    }
-
 }

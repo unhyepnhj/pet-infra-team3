@@ -11,11 +11,11 @@ public class DB2025Team03_ControllerFavorite {
 
     public DB2025Team03_ControllerFavorite() {
         try {
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03",
-                "root",
-                "DB2025Team03"
-            );
+        	conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
+                    "root",
+                    "root"
+                );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -8,13 +8,13 @@ public class DB2025Team03_ModelReservation {
     private String serviceType;
     private int slotId;
 
-    public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType) {
-        this.reservationId = reservationId;
-        this.userId = userId;
-        this.facilityId = facilityId;
-        this.date = date;
-        this.serviceType = serviceType;
-    }
+//    public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType) {
+//        this.reservationId = reservationId;
+//        this.userId = userId;
+//        this.facilityId = facilityId;
+//        this.date = date;
+//        this.serviceType = serviceType;
+//    }
     
     public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
         this.reservationId = reservationId;

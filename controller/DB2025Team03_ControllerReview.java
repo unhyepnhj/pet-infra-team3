@@ -14,10 +14,10 @@ public class DB2025Team03_ControllerReview {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03?serverTimezone=UTC",
-                "root",
-                "DB2025Team03"
-            );
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
+                    "root",
+                    "root"
+                );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +74,7 @@ public class DB2025Team03_ControllerReview {
         }
     }
 
-    //특정 사용자 리뷰 조회회
+    //특정 사용자 리뷰 조회
     public List<DB2025Team03_ModelReview> getReviewsByUserDB2025Team03(int userId) {
         String sql = "SELECT * FROM DB2025_Review WHERE user_id = ?";
         List<DB2025Team03_ModelReview> list = new ArrayList<>();
@@ -91,21 +91,31 @@ public class DB2025Team03_ControllerReview {
         return list;
     }
 
-    // 리뷰 ID로 조회회
-    public DB2025Team03_ModelReview getReviewByIdDB2025Team03(int reviewId) {
-        String sql = "SELECT * FROM DB2025_Review WHERE review_id = ?";
+    // 6/2 수정: 시설 ID로 조회
+    public List<DB2025Team03_ModelReviewWithUser> getReviewsByFacilityIdDB2025Team03(int facilityId) {
+        String sql = "SELECT U.name, R.rating, R.content, R.date " +
+                     "FROM DB2025_Review R " +
+                     "JOIN DB2025_User U ON R.user_id = U.user_id " +
+                     "WHERE R.facility_id = ?";
+        List<DB2025Team03_ModelReviewWithUser> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, reviewId);
+            ps.setInt(1, facilityId);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
+                while (rs.next()) {
+                    list.add(new DB2025Team03_ModelReviewWithUser(
+                        rs.getString("name"),
+                        rs.getInt("rating"),
+                        rs.getString("content"),
+                        rs.getDate("date")
+                    ));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
+
     //사용자 이름으로 리뷰 검색
     public List<DB2025Team03_ModelReviewWithUser> searchReviewsByUserNameDB2025Team03(String name) {
         String sql = "SELECT U.name, R.rating, R.content, R.date " +

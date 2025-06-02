@@ -23,11 +23,11 @@ public class DB2025Team03_ViewSearch {
                 "===== 검색 메뉴 =====\n" +
                 "1) 이름으로 시설 검색\n" +
                 "2) 주소(지역)로 시설 검색\n" +
-                "3) 유형으로 시설 검색 (ex.미용실, 병원)\n" +
-                "4)	방문 예정 시간 운영중인 시설 검색\n" +
-                "5) 평균 평점 이상 시설 검색(1~5)\n" +
+                "3) 유형으로 시설 검색\n" +
+                "4) 오픈 시간 이전 시설 검색\n" +
+                "5) 평균 평점 이상 시설 검색\n" +
                 "0) 종료\n\n" +
-                "선택(0~5)> "
+                "선택> "
             );
             // 취소나 창 닫기 → 종료
             if (sel == null) return;
@@ -60,7 +60,7 @@ public class DB2025Team03_ViewSearch {
                     break;
 
                 case 3:
-                    String category = JOptionPane.showInputDialog("검색할 유형(ex.미용실, 병원)>");
+                    String category = JOptionPane.showInputDialog("검색할 유형>");
                     if (category == null) continue;
                     results = facCtrl.searchByCategoryDB2025Team03(category.trim());
                     break;
@@ -70,14 +70,6 @@ public class DB2025Team03_ViewSearch {
                       "기준 오픈 시간 입력 (예: 09:00)>");
                     if (opening_hours == null) continue;
                     results = facCtrl.searchByOpeningBeforeDB2025Team03(opening_hours.trim());
-                    
-                    //openingHours가 빈 값이 많아서 여기만 조건문 걸어줄게
-                    if (results != null) {
-                        results.removeIf(f ->
-                            f.getOpeningHours() == null ||
-                            f.getOpeningHours().trim().isEmpty()
-                        );
-                    }
                     break;
 
                 case 5:
@@ -110,9 +102,11 @@ public class DB2025Team03_ViewSearch {
     }
 
     private void showResults(List<DB2025Team03_ModelFacility> results) {
-    	JTextArea ta = new JTextArea(20, 60);
+        JTextArea ta = new JTextArea(20, 60);
         ta.setEditable(false);
        
+        
+
         if (results.isEmpty()) {
             ta.setText("조회된 시설이 없습니다.");
         } else {

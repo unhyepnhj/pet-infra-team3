@@ -14,10 +14,10 @@ public class DB2025Team03_ControllerUser {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03?serverTimezone=UTC",
-                "root",
-                "DB2025Team03"
-            );
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
+                    "root",
+                    "root"
+                );
             conn.setAutoCommit(true);
         } catch (Exception e) {
             e.printStackTrace();

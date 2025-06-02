@@ -11,11 +11,10 @@ public class DB2025Team03_ControllerPet {
     public DB2025Team03_ControllerPet() {
         try {
         	conn = DriverManager.getConnection(
-        			"jdbc:mysql://localhost:3306/DB2025Team03",
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
                     "root",
-                    //"DB2025Team03"
                     "root"
-        			);
+                );
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -43,7 +43,57 @@ public class DB2025Team03_ViewFavorite extends JFrame {
 
         outputArea = new JTextArea();
         outputArea.setEditable(false);
-        add(new JScrollPane(outputArea), BorderLayout.SOUTH);
+        JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
+        scrollPane.setPreferredSize(new Dimension(0, 200)); 	// 높이 150
+        add(scrollPane, BorderLayout.SOUTH);
+
+        // 이벤트 리스너
+        addBtn.addActionListener(e -> addFavorite());
+        deleteBtn.addActionListener(e -> deleteFavorite());
+        viewBtn.addActionListener(e -> viewFavorites());
+        recommendBtn.addActionListener(e -> viewRecommended());
+
+        setVisible(true);
+    }
+    
+    // 6/2 수정-uid 전달받는 생성자(allGui용)
+    public DB2025Team03_ViewFavorite(int userId) {
+    	setTitle("관심 시설 기능");
+        setSize(500, 400);
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        // uid 입력 필드 -> 파라미터로 전달된 대로 보여주게 변경
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
+        
+        inputPanel.add(new JLabel("현재 로그인 ID:"));
+        JLabel userIdLabel = new JLabel(String.valueOf(userId));  // uid 텍스트로 표시
+        inputPanel.add(userIdLabel);
+
+        inputPanel.add(new JLabel("관심 시설 ID:"));
+        facilityIdField = new JTextField();
+        inputPanel.add(facilityIdField);
+
+        add(inputPanel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton addBtn = new JButton("좋아요 추가");
+        JButton deleteBtn = new JButton("좋아요 삭제");
+        JButton viewBtn = new JButton("내 좋아요 목록");
+        JButton recommendBtn = new JButton("추천 시설 보기");
+
+        buttonPanel.add(addBtn);
+        buttonPanel.add(deleteBtn);
+        buttonPanel.add(viewBtn);
+        buttonPanel.add(recommendBtn);
+
+        add(buttonPanel, BorderLayout.CENTER);
+
+        outputArea = new JTextArea();
+        outputArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
+        scrollPane.setPreferredSize(new Dimension(0, 200)); 	// 높이 150
+        add(scrollPane, BorderLayout.SOUTH);
 
         // 이벤트 리스너
         addBtn.addActionListener(e -> addFavorite());
@@ -59,7 +109,7 @@ public class DB2025Team03_ViewFavorite extends JFrame {
         String sql = "INSERT INTO DB2025_Favorite (user_id, facility_id) VALUES (?, ?)";
         try (
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "0724");
+                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             int userId = Integer.parseInt(userIdField.getText());
@@ -79,7 +129,7 @@ public class DB2025Team03_ViewFavorite extends JFrame {
         String sql = "DELETE FROM DB2025_Favorite WHERE user_id = ? AND facility_id = ?";
         try (
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "0724");
+                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             int userId = Integer.parseInt(userIdField.getText());
@@ -95,11 +145,11 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     }
 
     // 내 좋아요 목록 조회
-    private void viewFavorites() {
+    public void viewFavorites() {	// public으로 변경했습니다
         String sql = "SELECT facility_id FROM DB2025_Favorite WHERE user_id = ?";
         try (
             Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "0724");
+                "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             int userId = Integer.parseInt(userIdField.getText());
@@ -136,7 +186,7 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     
         try (Connection conn = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/DB2025Team03",
-                    "root", "0724");
+                    "root", "root");
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
     

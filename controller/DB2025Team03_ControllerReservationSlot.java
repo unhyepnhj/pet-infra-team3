@@ -9,11 +9,11 @@ public class DB2025Team03_ControllerReservationSlot {
 
     public DB2025Team03_ControllerReservationSlot() {
         try {
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/DB2025team03",
-                "root",
-                ""
-            );
+        	conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/DB2025Team03",
+                    "root",
+                    "root"
+                );
         } catch (SQLException e) {
             e.printStackTrace();
         }
