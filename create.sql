@@ -46,62 +46,6 @@ CREATE TABLE DB2025_Facility (
     opening_hours VARCHAR(50)
 );
 
-/* 예약 테이블 */
-CREATE TABLE DB2025_Reservation (
-    reservation_id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    facility_id INT NOT NULL,
-    date DATE NOT NULL,
-    service_type VARCHAR(50) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
-    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
-);
-
-/* 리뷰 테이블 */
-CREATE TABLE DB2025_Review (
-    review_id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    facility_id INT NOT NULL,
-    rating INT CHECK (rating BETWEEN 1 AND 5),
-    content TEXT,
-    date DATE,
-    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
-    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
-);
-
-/* 즐겨찾기 테이블 */
-CREATE TABLE DB2025_Favorite (
-    user_id INT NOT NULL,
-    facility_id INT NOT NULL,
-    PRIMARY KEY (user_id, facility_id),
-    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
-    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
-);
-
-# -----------------------------
-# 더미 데이터 삽입
-# -----------------------------
-
-INSERT INTO DB2025_User VALUES
-(1, '홍길동', 1990, '남', 'hong@example.com'),
-(2, '김영희', 1985, '여', 'kim@example.com'),
-(3, '이철수', 2000, '남', 'lee@example.com'),
-(4, '박민수', 1995, '남', 'park@example.com'),
-(5, '최지은', 1988, '여', 'choi@example.com');
-
-INSERT INTO DB2025_Pet VALUES
-(1, 1, '초코', 3, '강아지'),
-(2, 1, '밤이', 2, '고양이'),
-(3, 2, '루비', 4, '강아지'),
-(4, 3, '하늘', 1, '고양이'),
-(5, 4, '보리', 5, '강아지');
-
-/*
-데이터 출처:
-- 동물병원: 공공데이터포털(data.go.kr) > 서울특별시 동물병원 현황
-- 미용실, 펫호텔, 놀이터, 카페: 반려생활, 카카오맵, 서울열린데이터광장, 네이버지도, 블로그 참고
-- 수집일 기준: 2025년 5월 11일, 서대문구 내 영업 중 시설만 선별
-*/
 INSERT INTO DB2025_Facility (facility_id, name, address, category, opening_hours) VALUES
 (101, '가좌동물병원', '서울특별시 서대문구 응암로 77 (북가좌동)', '병원', '09:00-18:00'),
 (102, '백년동물병원', '서울특별시 서대문구 가좌로 104 (홍은동)', '병원', '09:00-18:00'),
@@ -153,15 +97,107 @@ INSERT INTO DB2025_Facility (facility_id, name, address, category, opening_hours
 (509, '스웨이커피스테이션', '서울 서대문구 연희동 126-1', '카페', '11:00-22:00'),
 (510, '에스크투데이', '서울 서대문구 연희동 191-4 2층', '카페', '12:00-21:00');
 
+/* 예약 기능용 수정 */
+/* 예약 기능 06-03 수정중..*/
+CREATE TABLE DB2025_Slot (
+    slot_id INT PRIMARY KEY,
+    facility_id INT NOT NULL,
+    slot_date DATE NOT NULL,
+    time_range VARCHAR(50) NOT NULL,
+    is_reserved TINYINT(1) DEFAULT FALSE,
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
+);
+
+INSERT INTO DB2025_Slot (slot_id, facility_id, slot_date, time_range, is_reserved) VALUES
+(1, 101, '2025-06-05', '09:00~10:00', 0),
+(2, 101, '2025-06-05', '10:00~11:00', 0),
+(3, 101, '2025-06-05', '11:00~12:00', 0),
+(4, 101, '2025-06-05', '13:00~14:00', 0),
+(5, 101, '2025-06-05', '14:00~15:00', 0),
+(6, 101, '2025-06-06', '09:00~10:00', 0),
+(7, 101, '2025-06-06', '10:00~11:00', 0),
+(8, 101, '2025-06-06', '11:00~12:00', 0),
+(9, 101, '2025-06-06', '13:00~14:00', 0),
+(10, 101, '2025-06-06', '14:00~15:00', 0),
+(11, 201, '2025-06-05', '09:00~10:00', 0),
+(12, 201, '2025-06-05', '10:00~11:00', 0),
+(13, 201, '2025-06-05', '11:00~12:00', 0),
+(14, 201, '2025-06-05', '13:00~14:00', 1),
+(15, 201, '2025-06-05', '14:00~15:00', 1),
+(16, 201, '2025-06-06', '09:00~10:00', 0),
+(17, 201, '2025-06-06', '10:00~11:00', 0),
+(18, 201, '2025-06-06', '11:00~12:00', 0),
+(19, 201, '2025-06-06', '13:00~14:00', 0),
+(20, 201, '2025-06-06', '14:00~15:00', 0);
+
+/* 예약 테이블 */
+CREATE TABLE DB2025_Reservation (
+    reservation_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    facility_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    date DATE NOT NULL,
+    service_type VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id),
+    FOREIGN KEY (slot_id) REFERENCES DB2025_Slot(slot_id)
+);
+
+/* 리뷰 테이블 */
+CREATE TABLE DB2025_Review (
+    review_id INT PRIMARY KEY,
+    user_id INT NOT NULL,
+    facility_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    content TEXT,
+    date DATE,
+    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
+);
+
+/* 즐겨찾기 테이블 */
+CREATE TABLE DB2025_Favorite (
+    user_id INT NOT NULL,
+    facility_id INT NOT NULL,
+    PRIMARY KEY (user_id, facility_id),
+    FOREIGN KEY (user_id) REFERENCES DB2025_User(user_id),
+    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
+);
+
+# -----------------------------
+# 더미 데이터 삽입
+# -----------------------------
+
+INSERT INTO DB2025_User VALUES
+(1, '홍길동', 1990, '남', 'hong@example.com'),
+(2, '김영희', 1985, '여', 'kim@example.com'),
+(3, '이철수', 2000, '남', 'lee@example.com'),
+(4, '박민수', 1995, '남', 'park@example.com'),
+(5, '최지은', 1988, '여', 'choi@example.com');
+
+INSERT INTO DB2025_Pet VALUES
+(1, 1, '초코', 3, '강아지'),
+(2, 1, '밤이', 2, '고양이'),
+(3, 2, '루비', 4, '강아지'),
+(4, 3, '하늘', 1, '고양이'),
+(5, 4, '보리', 5, '강아지');
+
+/*
+데이터 출처:
+- 동물병원: 공공데이터포털(data.go.kr) > 서울특별시 동물병원 현황
+- 미용실, 펫호텔, 놀이터, 카페: 반려생활, 카카오맵, 서울열린데이터광장, 네이버지도, 블로그 참고
+- 수집일 기준: 2025년 5월 11일, 서대문구 내 영업 중 시설만 선별
+*/
+
 INSERT INTO DB2025_Reservation VALUES
-(1, 1, 101, '2025-05-10', '진료'),
-(2, 2, 102, '2025-05-11', '미용'),
-(3, 3, 103, '2025-05-11', '음료'),
-(4, 1, 105, '2025-05-12', '숙박'),
-(5, 5, 101, '2025-05-13', '진료');
+(1, 1, 101, 1, '2025-05-10', '진료'),
+(2, 2, 102, 2, '2025-05-11', '미용'),
+(3, 3, 103, 3, '2025-05-11', '음료'),
+(4, 1, 105, 4, '2025-05-12', '숙박'),
+(5, 5, 101, 5, '2025-05-13', '진료');
 
 INSERT INTO DB2025_Review VALUES
-(1, 1, 101, 5, '좋았어요', '2025-05-10'),
+(1, 2, 101, 5, '좋았어요', '2025-05-10'),
 (2, 2, 102, 4, '괜찮아요', '2025-05-11'),
 (3, 3, 103, 3, '보통이에요', '2025-05-11'),
 (4, 4, 104, 5, '최고예요', '2025-05-12'),
@@ -219,8 +255,9 @@ SELECT * FROM DB2025_Review WHERE rating >= 4;
 START TRANSACTION;
 
 /* 예약과 동시에 즐겨찾기 추가 */
-INSERT INTO DB2025_Reservation (reservation_id, user_id, facility_id, date, service_type)
-VALUES (6, 2, 301, '2025-05-20', '호텔');
+INSERT INTO DB2025_Reservation (user_id, facility_id, slot_id, date, service_type)
+VALUES (2, 301, 6, '2025-05-20', '호텔');
+
 
 INSERT INTO DB2025_Favorite (user_id, facility_id)
 VALUES (2, 301);
@@ -265,8 +302,8 @@ WHERE address LIKE '%연희동%'
 -------------------------------------------- */
 
 /* INSERT 예시: 신규 예약 등록 */
-INSERT INTO DB2025_Reservation (reservation_id, user_id, facility_id, date, service_type)
-VALUES (7, 3, 502, '2025-05-22', '카페 이용');
+INSERT INTO DB2025_Reservation (user_id, facility_id, slot_id, date, service_type)
+VALUES (3, 502, 7, '2025-05-22', '카페 이용');
 
 /* UPDATE 예시: 리뷰 내용 수정 */
 UPDATE DB2025_Review
@@ -285,27 +322,4 @@ WHERE R.user_id = 1;
 
 ALTER TABLE DB2025_Review MODIFY review_id INT AUTO_INCREMENT;
 # ALTER TABLE DB2025_Reservation MODIFY reservation_id INT AUTO_INCREMENT;	/* 예약 ID 자동 증가 */
-
-
-/* 예약 기능용 수정 */
-CREATE TABLE DB2025_Slot (
-    slot_id INT NOT NULL,
-    facility_id INT NOT NULL,
-    time_range VARCHAR(50),
-    is_reserved BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (slot_id, facility_id),
-    FOREIGN KEY (facility_id) REFERENCES DB2025_Facility(facility_id)
-);
-
-    
-INSERT INTO DB2025_Slot (slot_id, facility_id, time_range) VALUES
-(1, 101, '09:00~10:00'),
-(2, 101, '10:00~11:00'),
-(3, 101, '11:00~12:00'),
-(4, 101, '13:00~14:00'),
-(5, 101, '14:00~15:00');
-
-ALTER TABLE DB2025_Reservation
-ADD COLUMN slot_id INT,
-ADD FOREIGN KEY (slot_id, facility_id) REFERENCES DB2025_Slot(slot_id, facility_id);
 
