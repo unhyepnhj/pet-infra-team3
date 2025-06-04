@@ -74,8 +74,8 @@ public class DB2025Team03_Manage {
     }
     
  //예약 등록
-    public void registerReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
-        reservationController.insertReservation(reservationId, userId, facilityId, date, serviceType, slotId);
+    public void registerReservation(int userId, int facilityId, String date, String serviceType, int slotId) {
+        reservationController.insertReservation(userId, facilityId, date, serviceType, slotId);
         slotController.markSlotAsReserved(slotId); //슬롯 상태 업데이트
         System.out.println("✅ 예약이 완료되었습니다.");
     }

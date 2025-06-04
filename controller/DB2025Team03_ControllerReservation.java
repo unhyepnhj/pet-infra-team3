@@ -23,15 +23,14 @@ public class DB2025Team03_ControllerReservation {
     }
 
     // INSERT
-    public void insertReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
-        String sql = "INSERT INTO DB2025_Reservation VALUES (?, ?, ?, ?, ?, ?)";
+    public void insertReservation(int userId, int facilityId, String date, String serviceType, int slotId) {
+        String sql = "INSERT INTO DB2025_Reservation (user_id, facility_id, date, service_type, slot_id) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, reservationId);
-            ps.setInt(2, userId);
-            ps.setInt(3, facilityId);
-            ps.setString(4, date);
-            ps.setString(5, serviceType);
-            ps.setInt(6, slotId);
+            ps.setInt(1, userId);
+            ps.setInt(2, facilityId);
+            ps.setString(3, date);
+            ps.setString(4, serviceType);
+            ps.setInt(5, slotId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

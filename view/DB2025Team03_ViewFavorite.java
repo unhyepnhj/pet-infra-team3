@@ -11,50 +11,50 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     private JTextField facilityIdField;
     private JTextArea outputArea;
 
-    public DB2025Team03_ViewFavorite() {
-        setTitle("관심 시설 기능");
-        setSize(500, 400);
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
-        inputPanel.add(new JLabel("User ID:"));
-        userIdField = new JTextField();
-        inputPanel.add(userIdField);
-
-        inputPanel.add(new JLabel("Facility ID:"));
-        facilityIdField = new JTextField();
-        inputPanel.add(facilityIdField);
-
-        add(inputPanel, BorderLayout.NORTH);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton addBtn = new JButton("좋아요 추가");
-        JButton deleteBtn = new JButton("좋아요 삭제");
-        JButton viewBtn = new JButton("내 좋아요 목록");
-        JButton recommendBtn = new JButton("추천 시설 보기");
-
-        buttonPanel.add(addBtn);
-        buttonPanel.add(deleteBtn);
-        buttonPanel.add(viewBtn);
-        buttonPanel.add(recommendBtn);
-
-        add(buttonPanel, BorderLayout.CENTER);
-
-        outputArea = new JTextArea();
-        outputArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
-        scrollPane.setPreferredSize(new Dimension(0, 200)); 	// 높이 150
-        add(scrollPane, BorderLayout.SOUTH);
-
-        // 이벤트 리스너
-        addBtn.addActionListener(e -> addFavorite());
-        deleteBtn.addActionListener(e -> deleteFavorite());
-        viewBtn.addActionListener(e -> viewFavorites());
-        recommendBtn.addActionListener(e -> viewRecommended());
-
-        setVisible(true);
-    }
+//    public DB2025Team03_ViewFavorite() {
+//        setTitle("관심 시설 기능");
+//        setSize(500, 400);
+//        setLayout(new BorderLayout());
+//        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//
+//        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
+//        inputPanel.add(new JLabel("User ID:"));
+//        userIdField = new JTextField();
+//        inputPanel.add(userIdField);
+//
+//        inputPanel.add(new JLabel("Facility ID:"));
+//        facilityIdField = new JTextField();
+//        inputPanel.add(facilityIdField);
+//
+//        add(inputPanel, BorderLayout.NORTH);
+//
+//        JPanel buttonPanel = new JPanel(new FlowLayout());
+//        JButton addBtn = new JButton("좋아요 추가");
+//        JButton deleteBtn = new JButton("좋아요 삭제");
+//        JButton viewBtn = new JButton("내 좋아요 목록");
+//        JButton recommendBtn = new JButton("추천 시설 보기");
+//
+//        buttonPanel.add(addBtn);
+//        buttonPanel.add(deleteBtn);
+//        buttonPanel.add(viewBtn);
+//        buttonPanel.add(recommendBtn);
+//
+//        add(buttonPanel, BorderLayout.CENTER);
+//
+//        outputArea = new JTextArea();
+//        outputArea.setEditable(false);
+//        JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
+//        scrollPane.setPreferredSize(new Dimension(0, 200)); 	// 높이 150
+//        add(scrollPane, BorderLayout.SOUTH);
+//
+//        // 이벤트 리스너
+//        addBtn.addActionListener(e -> addFavorite());
+//        deleteBtn.addActionListener(e -> deleteFavorite());
+//        viewBtn.addActionListener(e -> viewFavorites());
+//        recommendBtn.addActionListener(e -> viewRecommended());
+//
+//        setVisible(true);
+//    }
     
     // 6/2 수정-uid 전달받는 생성자(allGui용)
     public DB2025Team03_ViewFavorite(int userId) {
@@ -96,23 +96,23 @@ public class DB2025Team03_ViewFavorite extends JFrame {
         add(scrollPane, BorderLayout.SOUTH);
 
         // 이벤트 리스너
-        addBtn.addActionListener(e -> addFavorite());
-        deleteBtn.addActionListener(e -> deleteFavorite());
-        viewBtn.addActionListener(e -> viewFavorites());
+        addBtn.addActionListener(e -> addFavorite(userId));
+        deleteBtn.addActionListener(e -> deleteFavorite(userId));
+        viewBtn.addActionListener(e -> viewFavorites(userId));
         recommendBtn.addActionListener(e -> viewRecommended());
 
         setVisible(true);
     }
 
     // 좋아요 추가
-    private void addFavorite() {
+    private void addFavorite(int userId) {
         String sql = "INSERT INTO DB2025_Favorite (user_id, facility_id) VALUES (?, ?)";
         try (
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            int userId = Integer.parseInt(userIdField.getText());
+            // int userId = Integer.parseInt(userIdField.getText());
             int facilityId = Integer.parseInt(facilityIdField.getText());
             ps.setInt(1, userId);
             ps.setInt(2, facilityId);
@@ -122,17 +122,16 @@ public class DB2025Team03_ViewFavorite extends JFrame {
             outputArea.setText("좋아요 추가 실패: 입력 확인 또는 중복 여부 확인");
             e.printStackTrace();
         }
-    }
+    } 
 
     // 좋아요 삭제
-    private void deleteFavorite() {
+    private void deleteFavorite(int userId) {
         String sql = "DELETE FROM DB2025_Favorite WHERE user_id = ? AND facility_id = ?";
         try (
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            int userId = Integer.parseInt(userIdField.getText());
             int facilityId = Integer.parseInt(facilityIdField.getText());
             ps.setInt(1, userId);
             ps.setInt(2, facilityId);
@@ -145,14 +144,13 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     }
 
     // 내 좋아요 목록 조회
-    public void viewFavorites() {	// public으로 변경했습니다
+    public void viewFavorites(int userId) {	// public으로 변경했습니다
         String sql = "SELECT facility_id FROM DB2025_Favorite WHERE user_id = ?";
         try (
             Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/DB2025Team03", "root", "root");
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            int userId = Integer.parseInt(userIdField.getText());
             ps.setInt(1, userId);
 
             try (ResultSet rs = ps.executeQuery()) {

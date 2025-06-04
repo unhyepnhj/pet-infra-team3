@@ -1,13 +1,31 @@
 package view;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.List;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+
 import controller.DB2025Team03_ControllerReservationSlot;
+import controller.DB2025Team03_ControllerUserActivity;
 import model.DB2025Team03_ModelPet;
 import model.DB2025Team03_ModelReservation;
 import model.DB2025Team03_ModelReservationSlot;
+import model.DB2025Team03_ModelUserActivity;
 
 public class DB2025Team03_ViewManage extends JFrame {
     private JTextField userIdField;
@@ -38,7 +56,7 @@ public class DB2025Team03_ViewManage extends JFrame {
 
         setupUI();
         
-        setAlwaysOnTop(true);  
+        // setAlwaysOnTop(true);  
         setVisible(true);
         toFront();
     }
@@ -137,10 +155,13 @@ public class DB2025Team03_ViewManage extends JFrame {
         table.getColumn("수정").setCellRenderer(new ButtonRenderer());
         table.getColumn("삭제").setCellRenderer(new ButtonRenderer());
         table.getColumn("수정").setCellEditor(new ButtonEditor(new JCheckBox(), "수정", (row) -> {
-            DB2025Team03_ModelPet pet = pets.get(row);
+            // System.out.println("수정 버튼 클릭됨, row: "+row);
+        	DB2025Team03_ModelPet pet = pets.get(row);
             String newName = JOptionPane.showInputDialog("새 이름 입력:", pet.getName());
+            // System.out.println("입력 완료: " + newName);
             if (newName != null && !newName.trim().isEmpty()) {
                 manage.updatePetName(userId, pet.getPetId(), newName);
+                // System.out.println("업데이트 완료");
                 showPetManagement(userId); // 갱신
             }
         }));
@@ -200,18 +221,35 @@ public class DB2025Team03_ViewManage extends JFrame {
     private void showReservationList(int userId) {
         actionPanel.removeAll();
         actionPanel.setLayout(new BorderLayout());
+        
+        DB2025Team03_ControllerUserActivity activityController = new DB2025Team03_ControllerUserActivity();
+        DB2025Team03_ModelUserActivity activity = activityController.getUserActivitySummary(userId);
+        if (activity != null) {
+            String summaryText = String.format("총 예약: %d건, 총 리뷰: %d건",
+                activity.getTotalReservations(), activity.getTotalReviews());
+            JLabel summaryLabel = new JLabel(summaryText);
+            summaryLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+            actionPanel.add(summaryLabel, BorderLayout.NORTH);
+        }
+        activityController.close();
 
+        
         // 사용자별 예약 내역 조회
         List<DB2025Team03_ModelReservation> reservations = manage.reservationController.searchByUserId(userId);
+        
+        /*06-03 추가*/
+        DB2025Team03_ControllerReservationSlot slotController = new DB2025Team03_ControllerReservationSlot();
         
         // JTable 컬럼 정의 (필요에 따라 수정)
         String[] columnNames = {
              /*  !!!6/1 수정코드!!!*/
             "예약 번호",
-            "사용자 ID",
+            // "사용자 ID",
             "시설 ID", 
             "예약 날짜",
-            "예약 유형",
+            "예약 시간",/*06-03 수정함*/
+            "예약 취소",/*06-03 수정함*/
+            // "예약 유형",
             "리뷰작성" 
         };
         Object[][] data = new Object[reservations.size()][columnNames.length];
@@ -220,26 +258,45 @@ public class DB2025Team03_ViewManage extends JFrame {
         for (int i = 0; i < reservations.size(); i++) {
             DB2025Team03_ModelReservation res = reservations.get(i);
             data[i][0] = res.getReservationId();
-            data[i][1] = res.getUserId();
-            data[i][2] = res.getFacilityId();
+            //data[i][1] = res.getUserId();
+            data[i][1] = res.getFacilityId();
       
-            data[i][3] = res.getDate();   // 실제 getter에 맞게 조정
-            data[i][4] = res.getServiceType();
-            data[i][5]= "리뷰작성";
+            data[i][2] = res.getDate();   // 실제 getter에 맞게 조정
+            //data[i][4] = res.getServiceType();
+            String timeRange = slotController.getTimeRangeBySlotId(res.getSlotId());
+            data[i][3] = timeRange;
+            
+            data[i][4] = "예약 취소";/*06-03 수정*/
+            data[i][5]= "리뷰 작성";
         }
 
-        // 모델 및 테이블 생성
+     // 모델 및 테이블 생성
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            @Override
             public boolean isCellEditable(int row, int column) {
-            	  /*  !!!6/1 수정코드!!!*/
-            	// '리뷰작성'만 클릭 가능하도록 
-                return column==5;
+                // 예약 취소(4번) & 리뷰 작성(5번) 둘 다 클릭 가능하게 함
+                return column == 4 || column == 5;
             }
         };
         JTable table = new JTable(model);
         table.setFont(new Font("Monospaced", Font.PLAIN, 12));
         table.setRowHeight(30);
 
+        /*06-03 수정 코드 취소 기능*/
+        table.getColumn("예약 취소").setCellRenderer(new ButtonRenderer());
+        table.getColumn("예약 취소").setCellEditor(new ButtonEditor(new JCheckBox(), "예약 취소", (row) -> {
+            DB2025Team03_ModelReservation res = reservations.get(row);
+            int reservationId = res.getReservationId();
+            int slotId = res.getSlotId();
+
+            int result = JOptionPane.showConfirmDialog(this, "정말 예약을 취소하시겠습니까?", "예약 취소 확인", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                manage.reservationController.deleteReservation(reservationId);
+                manage.slotController.unmarkSlotAsReserved(slotId);
+                JOptionPane.showMessageDialog(this, "예약이 취소되었습니다.");
+                showReservationList(userId); // 갱신
+            }
+        }));
         
         /*  !!!6/1 수정코드!!!*/
         //!! 리뷰 작성 버튼 추가
@@ -273,24 +330,28 @@ public class DB2025Team03_ViewManage extends JFrame {
         JTextField facilityIdField = new JTextField(10);
         JTextField dateField = new JTextField(10);
         JTextField serviceTypeField = new JTextField(10);
-        JTextField reservationIdField = new JTextField(10);
+        /*06-03 제거함*/
+        //JTextField reservationIdField = new JTextField(10);
         JComboBox<DB2025Team03_ModelReservationSlot> slotComboBox = new JComboBox<>();
-
+        
         // 슬롯 불러오는 버튼
         JButton loadSlotBtn = new JButton("예약 시간 불러오기");
 
         JPanel panel = new JPanel(new GridLayout(5, 2));
         panel.add(new JLabel("시설 ID:"));
         panel.add(facilityIdField);
+        
         panel.add(new JLabel("예약 날짜 (yyyy-mm-dd):"));
         panel.add(dateField);
-        panel.add(new JLabel("예약 ID:"));
-        panel.add(reservationIdField);
+        /*06-03 제거*/
+        //panel.add(new JLabel("예약 ID:"));
+        //panel.add(reservationIdField);
         panel.add(new JLabel("예약 시간:"));
         panel.add(slotComboBox);
         panel.add(new JLabel(""));
         panel.add(loadSlotBtn);
 
+        
         // 슬롯 불러오기 버튼 클릭 시 동작
         loadSlotBtn.addActionListener(e -> {
             try {
@@ -321,7 +382,8 @@ public class DB2025Team03_ViewManage extends JFrame {
         int result = JOptionPane.showConfirmDialog(this, panel, "예약 등록", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             try {
-                int reservationId = Integer.parseInt(reservationIdField.getText());
+            /*06-03 제거함*/
+                //int reservationId = Integer.parseInt(reservationIdField.getText());
                 int facilityId = Integer.parseInt(facilityIdField.getText());
                 String date = dateField.getText();
                 DB2025Team03_ModelReservationSlot selectedSlot =
@@ -332,8 +394,13 @@ public class DB2025Team03_ViewManage extends JFrame {
                 }
 
                 int slotId = selectedSlot.getSlotId();
+                
+                /*06-03 제거함*/
+                //manage.registerReservation(reservationId, userId, facilityId, date, "", slotId);
+                String serviceType = serviceTypeField.getText(); 
+                manage.registerReservation(userId, facilityId, date, serviceType, slotId);
 
-                manage.registerReservation(reservationId, userId, facilityId, date, "", slotId);
+                // 슬롯 사용 처리
 
                 // 슬롯 사용 처리
                 DB2025Team03_ControllerReservationSlot slotController = new DB2025Team03_ControllerReservationSlot();
