@@ -1,5 +1,9 @@
 package model;
 
+/*
+ * ControllerUser 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelUser {
     private int userId;
     private String name;
@@ -14,6 +18,7 @@ public class DB2025Team03_ModelUser {
      * @param gender 성별
      * @param email 이메일
      */
+    
     public DB2025Team03_ModelUser(int userId, String name, int birthYear, String gender, String email) {
         this.userId = userId;
         this.name = name;

@@ -2,6 +2,10 @@ package model;
 
 import java.sql.Date;
 
+/*
+ * ControllerReview 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelReview {
     private int reviewId;
     private int userId;

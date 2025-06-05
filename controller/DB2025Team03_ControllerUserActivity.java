@@ -8,6 +8,12 @@ import java.sql.SQLException;
 
 import model.DB2025Team03_ModelUserActivity;
 
+/*
+ * DB2025_View_UserActivity 테이블에 접근하여 요약된 유저 활동 내역 관리
+ * 활동 내역에는 지금까지 유저가 등록한 총 예약 건수, 총 리뷰 건수가 저장됨
+ * view로 구현
+ */
+
 public class DB2025Team03_ControllerUserActivity {
     private Connection conn;
 

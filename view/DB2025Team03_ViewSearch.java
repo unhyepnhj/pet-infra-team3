@@ -8,6 +8,9 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
+/*
+ * DB2025Team03_ControllerFacility 클래스에 구현된 시설 검색 기능을 유저 인터페이스에 구현
+ */
 public class DB2025Team03_ViewSearch {
     private DB2025Team03_ControllerFacility facCtrl;
 
@@ -18,7 +21,8 @@ public class DB2025Team03_ViewSearch {
     
     public void showMenu() {
         while (true) {
-            // ② 사용자에게 메뉴 선택 받기
+            // ② 사용자에게 메뉴 선택 받기: 검색 조건 다양화하여 유저 편의성 증진
+        	// e.g., "2) 주소로 시설 검색" 선택 후 "연희" 입력 시 주소에 연희동 등 키워드 포함된 시설 출력
             String sel = JOptionPane.showInputDialog(null,
                 "===== 검색 메뉴 =====\n" +
                 "1) 이름으로 시설 검색\n" +

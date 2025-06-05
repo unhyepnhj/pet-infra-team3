@@ -1,5 +1,9 @@
 package model;
 
+/*
+ * ControllerReservation 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelReservation {
     private int reservationId;
     private int userId;
@@ -7,14 +11,16 @@ public class DB2025Team03_ModelReservation {
     private String date;
     private String serviceType;
     private int slotId;
-
-//    public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType) {
-//        this.reservationId = reservationId;
-//        this.userId = userId;
-//        this.facilityId = facilityId;
-//        this.date = date;
-//        this.serviceType = serviceType;
-//    }
+    
+    /**
+     * 
+     * @param reservationId	: 예약 번호
+     * @param userId		: 유저 ID
+     * @param facilityId	: 시설 ID
+     * @param date			: 예약 일자
+     * @param serviceType	: 예약한 서비스 유형
+     * @param slotId		: 예약 slot
+     */
     
     public DB2025Team03_ModelReservation(int reservationId, int userId, int facilityId, String date, String serviceType, int slotId) {
         this.reservationId = reservationId;

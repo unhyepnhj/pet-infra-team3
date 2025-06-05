@@ -1,11 +1,23 @@
 package model;
 
+/*
+ * ControllerPet 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelPet {
     private int petId;
     private int userId;
     private String name;
     private int age;
     private String species;
+    
+    /**
+     * @param petId		: 반려동물 ID
+     * @param userId	: 유저 ID
+     * @param name		: 반려동물 이름
+     * @param age		: 반려동물 나이
+     * @param species	: 반려동물 종
+     */
 
     public DB2025Team03_ModelPet(int petId, int userId, String name, int age, String species) {
         this.petId = petId;

@@ -6,6 +6,10 @@ import java.util.List;
 
 import model.DB2025Team03_ModelUser;
 
+/*
+ * DB2025Team03_User 테이블에 접근하여 유저 데이터 관리
+ */
+
 public class DB2025Team03_ControllerUser {
     private Connection conn;
 
@@ -83,7 +87,8 @@ public class DB2025Team03_ControllerUser {
         }
     }
 
-    //사용자 정보 수정정
+    // UPDATE
+    // 사용자 아이디=user_id인 사용자의 이메일을 newEmail로 변경
     public void updateEmailDB2025Team03(int user_id, String newEmail) {
         String sql = "UPDATE DB2025_User SET email = ? WHERE user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -94,7 +99,8 @@ public class DB2025Team03_ControllerUser {
             e.printStackTrace();
         }
     }
-
+    
+    // 사용자 아이디=user_id인 사용자의 이름을 newName으로 변경
     public void updateNameDB2025Team03(int user_id, String newName) {
         String sql = "UPDATE DB2025_User SET name = ? WHERE user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -105,6 +111,8 @@ public class DB2025Team03_ControllerUser {
             e.printStackTrace();
         }
     }
+    
+    // 사용자 아이디=user_id인 사용자의 생일을 newBirtyYear로 변경
     public void updateBirthYearDB2025Team03(int user_id, int newBirthYear) {
         String sql = "UPDATE DB2025_User SET birth_year = ? WHERE user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -115,7 +123,8 @@ public class DB2025Team03_ControllerUser {
             e.printStackTrace();
         }
     }
-
+    
+    // 사용자 아이디=user_id인 사용자의 성별을 newGender로 변경
     public void updateGenderDB2025Team03(int user_id, String newGender) {
         String sql = "UPDATE DB2025_User SET gender = ? WHERE user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -127,7 +136,7 @@ public class DB2025Team03_ControllerUser {
         }
     }
 
-    //전체 사용자 조회회
+    // 전체 사용자 조회
     public List<DB2025Team03_ModelUser> readAllUsers() {
         String sql = "SELECT * FROM DB2025_User";
         List<DB2025Team03_ModelUser> list = new ArrayList<>();
@@ -144,7 +153,7 @@ public class DB2025Team03_ControllerUser {
         return list;
     }
 
-    //(id로 조회)
+    // 사용자 아이디=user_id인 사용자 검색
     public DB2025Team03_ModelUser searchByIdDB2025Team03(int user_id) {
         String sql = "SELECT * FROM DB2025_User WHERE user_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -159,7 +168,8 @@ public class DB2025Team03_ControllerUser {
         }
         return null;
     }
-    //email로 검색색
+    
+    // 사용자 이메일=email인 사용자 검색
         public List<DB2025Team03_ModelUser> searchByEmailDB2025Team03(String email) {
         String sql = "SELECT * FROM DB2025_User WHERE email LIKE ?";
         List<DB2025Team03_ModelUser> list = new ArrayList<>();
@@ -175,7 +185,8 @@ public class DB2025Team03_ControllerUser {
         }
         return list;
     }
-    //동명이인 구분분
+        
+    // 동명이인 구분
     public DB2025Team03_ModelUser searchByNameAndBirthYearDB2025Team03(String name, int birthYear) {
         String sql = "SELECT * FROM DB2025_User WHERE name = ? AND birth_year = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

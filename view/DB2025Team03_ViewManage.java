@@ -27,6 +27,10 @@ import model.DB2025Team03_ModelReservation;
 import model.DB2025Team03_ModelReservationSlot;
 import model.DB2025Team03_ModelUserActivity;
 
+/*
+ * DB2025Team03_Manage 클래스에 구현된 내 정보 관리 기능을 유저 인터페이스에 구현
+ */
+
 public class DB2025Team03_ViewManage extends JFrame {
     private JTextField userIdField;
     private JPanel mainPanel, actionPanel;
@@ -46,12 +50,13 @@ public class DB2025Team03_ViewManage extends JFrame {
         setVisible(true);
     }
     
-    public DB2025Team03_ViewManage(int userId) {	// 6/2 수정: allGui에서 입력받은 ID 사용하는 생성자 추가
+    // 6/2 수정: 기본 생성자 삭제하고 allGui에서 입력받은 uid 사용하는 생성자 추가
+    public DB2025Team03_ViewManage(int userId) {
         setTitle("반려동물 관리 시스템");
         setSize(700, 550);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);	// 6/2 수정: EXIT -> DISPOSE
         setLocationRelativeTo(null);
-        this.userId = userId; // 추가
+        this.userId = userId;
         manage = new DB2025Team03_Manage();
 
         setupUI();
@@ -66,23 +71,8 @@ public class DB2025Team03_ViewManage extends JFrame {
         actionPanel = new JPanel(new FlowLayout());
 
         JPanel topPanel = new JPanel(new FlowLayout());
-//        userIdField = new JTextField(10);
-//        JButton loadBtn = new JButton("확인");
-//        topPanel.add(new JLabel("사용자 ID:"));
-//        topPanel.add(userIdField);
-//        topPanel.add(loadBtn);
-//
-//        loadBtn.addActionListener(e -> {
-//            String input = userIdField.getText().trim();
-//            if (!input.matches("\\d+")) {
-//                JOptionPane.showMessageDialog(this, "ID는 숫자로 입력하세요.");
-//                return;
-//            }
-//            int userId = Integer.parseInt(input);
-//            showUserOptions(userId);
-//        });
 
-     // 6/2 수정: ID 입력 -> 로그인된 사용자 ID 표시하는 것으로 변경
+        // 6/2 수정: 매번 ID 입력하는 것에서 앞서 로그인한 사용자 ID 표시하는 것으로 변경
         JLabel userLabel = new JLabel("현재 로그인 ID: " + userId);
         userLabel.setFont(new Font("Dialog", Font.BOLD, 16));
         topPanel.add(userLabel);
@@ -91,7 +81,8 @@ public class DB2025Team03_ViewManage extends JFrame {
         mainPanel.add(actionPanel, BorderLayout.CENTER);
         add(mainPanel);
     }
-
+    
+    // "내 정보 관리"기능 메인 화면: 반려동물 관리/예약 조회/예약 등록 옵션 버튼 표시
     private void showUserOptions(int userId) {
         actionPanel.removeAll();
         actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 40));
@@ -105,7 +96,7 @@ public class DB2025Team03_ViewManage extends JFrame {
         reservationViewBtn.setPreferredSize(btnSize);
         reservationRegisterBtn.setPreferredSize(btnSize);
         
-        // System.out.println("클릭됨");	// 디버깅용
+        // 각 버튼 클릭 시 이벤트
         petManageBtn.addActionListener(e -> showPetManagement(userId));
         reservationViewBtn.addActionListener(e -> showReservationList(userId));
         reservationRegisterBtn.addActionListener(e -> showReservationForm(userId));
@@ -117,16 +108,16 @@ public class DB2025Team03_ViewManage extends JFrame {
         actionPanel.revalidate();
         actionPanel.repaint();
     }
-
+    
+// "반려동물 관리" 버튼 클릭될 경우
     private void showPetManagement(int userId) {
-        // actionPanel.removeAll();
-    	// actionPanel.setLayout(new BorderLayout());
-    	mainPanel.remove(actionPanel);	// 6/2 수정
+    	mainPanel.remove(actionPanel);
     	actionPanel = new JPanel(new BorderLayout());
 
         List<DB2025Team03_ModelPet> pets = manage.petController.searchByUserId(userId);
-
-        // JTable에 넣을 데이터 생성
+        
+        // JTable로 반려동물 리스트 출력
+        // JTable 정의
         String[] columnNames = {"반려동물 ID", "사용자 ID", "이름", "나이", "종", "수정", "삭제"};
         Object[][] data = new Object[pets.size()][7];
 
@@ -154,17 +145,17 @@ public class DB2025Team03_ViewManage extends JFrame {
         // 버튼 기능 처리
         table.getColumn("수정").setCellRenderer(new ButtonRenderer());
         table.getColumn("삭제").setCellRenderer(new ButtonRenderer());
+        // "수정" 클릭했을 경우
         table.getColumn("수정").setCellEditor(new ButtonEditor(new JCheckBox(), "수정", (row) -> {
-            // System.out.println("수정 버튼 클릭됨, row: "+row);
         	DB2025Team03_ModelPet pet = pets.get(row);
             String newName = JOptionPane.showInputDialog("새 이름 입력:", pet.getName());
-            // System.out.println("입력 완료: " + newName);
+            // 잘못된 입력 제외하고 업데이트
             if (newName != null && !newName.trim().isEmpty()) {
                 manage.updatePetName(userId, pet.getPetId(), newName);
-                // System.out.println("업데이트 완료");
-                showPetManagement(userId); // 갱신
+                showPetManagement(userId);
             }
         }));
+        // "삭제" 클릭했을 경우 해당 행의 반려동물 삭제
         table.getColumn("삭제").setCellEditor(new ButtonEditor(new JCheckBox(), "삭제", (row) -> {
             DB2025Team03_ModelPet pet = pets.get(row);
             int result = JOptionPane.showConfirmDialog(this, "정말 삭제하시겠습니까?", "삭제 확인", JOptionPane.YES_NO_OPTION);
@@ -177,7 +168,7 @@ public class DB2025Team03_ViewManage extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         actionPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 상단 우측 등록/뒤로가기 버튼
+        // 사용자 편의성 위한 상단 우측 등록/뒤로가기 버튼
         JButton registerBtn = new JButton("반려동물 등록");
         registerBtn.addActionListener(e -> {
             JTextField nameField = new JTextField(10);
@@ -217,7 +208,9 @@ public class DB2025Team03_ViewManage extends JFrame {
         actionPanel.revalidate();
         actionPanel.repaint();
     }
-
+    
+// "예약 조회" 버튼 클릭될 경우
+    // 전체 예약 내역 리스트 출력
     private void showReservationList(int userId) {
         actionPanel.removeAll();
         actionPanel.setLayout(new BorderLayout());
@@ -233,23 +226,19 @@ public class DB2025Team03_ViewManage extends JFrame {
         }
         activityController.close();
 
-        
         // 사용자별 예약 내역 조회
         List<DB2025Team03_ModelReservation> reservations = manage.reservationController.searchByUserId(userId);
         
-        /*06-03 추가*/
+        // 6/3 추가: slot 기능
         DB2025Team03_ControllerReservationSlot slotController = new DB2025Team03_ControllerReservationSlot();
         
         // JTable 컬럼 정의 (필요에 따라 수정)
         String[] columnNames = {
-             /*  !!!6/1 수정코드!!!*/
             "예약 번호",
-            // "사용자 ID",
             "시설 ID", 
             "예약 날짜",
             "예약 시간",/*06-03 수정함*/
             "예약 취소",/*06-03 수정함*/
-            // "예약 유형",
             "리뷰작성" 
         };
         Object[][] data = new Object[reservations.size()][columnNames.length];
@@ -258,15 +247,11 @@ public class DB2025Team03_ViewManage extends JFrame {
         for (int i = 0; i < reservations.size(); i++) {
             DB2025Team03_ModelReservation res = reservations.get(i);
             data[i][0] = res.getReservationId();
-            //data[i][1] = res.getUserId();
             data[i][1] = res.getFacilityId();
-      
             data[i][2] = res.getDate();   // 실제 getter에 맞게 조정
-            //data[i][4] = res.getServiceType();
             String timeRange = slotController.getTimeRangeBySlotId(res.getSlotId());
             data[i][3] = timeRange;
-            
-            data[i][4] = "예약 취소";/*06-03 수정*/
+            data[i][4] = "예약 취소";
             data[i][5]= "리뷰 작성";
         }
 
@@ -298,10 +283,7 @@ public class DB2025Team03_ViewManage extends JFrame {
             }
         }));
         
-        /*  !!!6/1 수정코드!!!*/
-        //!! 리뷰 작성 버튼 추가
-        
-        
+        // 리뷰 작성 버튼 추가 및 클릭 이벤트 구현
         table.getColumn("리뷰작성").setCellRenderer(new ButtonRenderer());
         table.getColumn("리뷰작성").setCellEditor(new ButtonEditor(new JCheckBox(), "리뷰작성", (row) -> {
             DB2025Team03_ModelReservation res = reservations.get(row);
@@ -309,8 +291,6 @@ public class DB2025Team03_ViewManage extends JFrame {
             // 리뷰 창 열기 
             new DB2025Team03_ViewReview(userId, facilityId); 
         }));
-        
-        
         
         JScrollPane scrollPane = new JScrollPane(table);
         actionPanel.add(scrollPane, BorderLayout.CENTER);
@@ -330,8 +310,6 @@ public class DB2025Team03_ViewManage extends JFrame {
         JTextField facilityIdField = new JTextField(10);
         JTextField dateField = new JTextField(10);
         JTextField serviceTypeField = new JTextField(10);
-        /*06-03 제거함*/
-        //JTextField reservationIdField = new JTextField(10);
         JComboBox<DB2025Team03_ModelReservationSlot> slotComboBox = new JComboBox<>();
         
         // 슬롯 불러오는 버튼
@@ -343,15 +321,11 @@ public class DB2025Team03_ViewManage extends JFrame {
         
         panel.add(new JLabel("예약 날짜 (yyyy-mm-dd):"));
         panel.add(dateField);
-        /*06-03 제거*/
-        //panel.add(new JLabel("예약 ID:"));
-        //panel.add(reservationIdField);
         panel.add(new JLabel("예약 시간:"));
         panel.add(slotComboBox);
         panel.add(new JLabel(""));
         panel.add(loadSlotBtn);
 
-        
         // 슬롯 불러오기 버튼 클릭 시 동작
         loadSlotBtn.addActionListener(e -> {
             try {
@@ -382,8 +356,6 @@ public class DB2025Team03_ViewManage extends JFrame {
         int result = JOptionPane.showConfirmDialog(this, panel, "예약 등록", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             try {
-            /*06-03 제거함*/
-                //int reservationId = Integer.parseInt(reservationIdField.getText());
                 int facilityId = Integer.parseInt(facilityIdField.getText());
                 String date = dateField.getText();
                 DB2025Team03_ModelReservationSlot selectedSlot =
@@ -395,12 +367,8 @@ public class DB2025Team03_ViewManage extends JFrame {
 
                 int slotId = selectedSlot.getSlotId();
                 
-                /*06-03 제거함*/
-                //manage.registerReservation(reservationId, userId, facilityId, date, "", slotId);
                 String serviceType = serviceTypeField.getText(); 
                 manage.registerReservation(userId, facilityId, date, serviceType, slotId);
-
-                // 슬롯 사용 처리
 
                 // 슬롯 사용 처리
                 DB2025Team03_ControllerReservationSlot slotController = new DB2025Team03_ControllerReservationSlot();

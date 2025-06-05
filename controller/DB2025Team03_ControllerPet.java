@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import model.DB2025Team03_ModelPet;
 
+/*
+ * DB2025Team03_Pet 테이블에 접근하여 반려동물 데이터 관리
+ */
+
 public class DB2025Team03_ControllerPet {
     private Connection conn;
 
@@ -21,7 +25,7 @@ public class DB2025Team03_ControllerPet {
         }
     }
 
-    // CREATE
+    // INSERT
     public void insertPet(int pet_id, int user_id, String name, int age, String species) {
         String sql = "INSERT INTO DB2025_Pet VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -36,7 +40,7 @@ public class DB2025Team03_ControllerPet {
         }
     }
     
-    // 2025.05.25 수정 - 반려동물 ID 자동 배정되는 메소드 추가 
+    // 2025.05.25 수정 - 반려동물 삽입 시 ID 자동 배정
     public void insertPet2(int user_id, String name, int age, String species) {
         String getMaxIdSql = "SELECT MAX(pet_id) FROM DB2025_Pet";	// 현재 Pet 테이블에 저장된 반려동물 ID 중 가장 큰 것
         String insertSql = "INSERT INTO DB2025_Pet VALUES (?, ?, ?, ?, ?)";
@@ -64,8 +68,7 @@ public class DB2025Team03_ControllerPet {
         }
     }
 
-
-    // READ
+    // 전체 유저의 반려동물 한 번에 출력
     public List<DB2025Team03_ModelPet> readAllPets() {
         List<DB2025Team03_ModelPet> list = new ArrayList<>();
         String sql = "SELECT * FROM DB2025_Pet";
@@ -87,7 +90,7 @@ public class DB2025Team03_ControllerPet {
     }
 
     // UPDATE
-    public void updatePetName(int user_id, int pet_id, String newName) {	// 수정함
+    public void updatePetName(int user_id, int pet_id, String newName) {
         String sql = "UPDATE DB2025_Pet SET name = ? WHERE user_id = ? AND pet_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, newName);
@@ -99,7 +102,7 @@ public class DB2025Team03_ControllerPet {
         }
     }
 
-    // DELETE 
+    // DELETE
     // 2025.05.25 수정 - user_id, pet_id 입력받아 삭제하는 것으로 변경
     public void deletePet(int user_id, int pet_id) {
         String sql = "DELETE FROM DB2025_Pet WHERE user_id = ? AND pet_id = ?";

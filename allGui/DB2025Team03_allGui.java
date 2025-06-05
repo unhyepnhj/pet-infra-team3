@@ -23,11 +23,15 @@ import view.DB2025Team03_ViewManage;
 import view.DB2025Team03_ViewReview;
 import view.DB2025Team03_ViewSearch;
 
+/*
+ * 유저 인터페이스 구현
+ */
+
 public class DB2025Team03_allGui {
 
     private JFrame   frame;
     private JPanel   panel;
-    private JButton btnLogin;	// 6/2 수정: 로그인 버튼 추가
+    private JButton btnLogin;
     private JButton  btnFacility;
     private JButton btnManage;
     private JButton  btnReview;
@@ -37,6 +41,7 @@ public class DB2025Team03_allGui {
         initGui();
     }
 
+    // GUI 실행 시작: 메인 화면 생성 및 컴포넌트 부착
     private void initGui() {
         frame = new JFrame("DB2025Team03 메인 메뉴");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -134,13 +139,13 @@ public class DB2025Team03_allGui {
         });
         
     }
-    
-    
+     
     // 6.2 수정: 로그인 이벤트 추가
     /*
      * 로그인 팝업 -> ID/PW 입력(DB 구조상 비밀번호 사용하지 않으므로 임의 값 입력하고 아래에서는 무시)
      * 입력한 ID를 전역 세션으로 저장하여 외부 클래스와 연동 -> 패키지 내 Session 클래스 추가
      */
+    
     private void showLoginDialog() {
         JPanel loginPanel = new JPanel();
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
@@ -152,17 +157,17 @@ public class DB2025Team03_allGui {
         loginPanel.add(Box.createVerticalStrut(10));
 
         loginPanel.add(new JLabel("비밀번호:"));
-        loginPanel.add(passwordField);  // DB에서 사용하지 않으므로 임의 값 입력
+        loginPanel.add(passwordField);
 
         int result = JOptionPane.showConfirmDialog(frame, loginPanel, "로그인",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             int userId = Integer.parseInt(userIdField.getText());
-            // char[] password = passwordField.getPassword(); // 사용 안 함
+            // char[] password = passwordField.getPassword(); 		// 사용 안 함
 
             if (userId != 0) {
-            	DB2025Team03_Session.userId = userId;	// 세션에 추가
+            	DB2025Team03_Session.userId = userId;	// 세션에 추가 -> 프로그램 전체에서 사용
                 JOptionPane.showMessageDialog(frame,
                         "로그인 되었습니다: " + userId,
                         "로그인 성공", JOptionPane.INFORMATION_MESSAGE);

@@ -9,9 +9,17 @@ import java.util.List;
 import controller.DB2025Team03_ControllerReservationSlot;
 
 /*
- * 관리 기능
- * 1) 반려동물 관리
- * 2) 예약 내역 관리
+ * 내 정보 관리 기능
+ * 1) 반려동물 관리 기능
+ * 		1. 반려동물 리스트 조회
+ * 		2. 반려동물 등록
+ * 		3. 반려동물 정보 수정 - 이름 변경
+ * 2) 예약 내역 관리 기능
+ * 		1. 예약 내역 조회
+ * 		2. 각 예약별 취소 or 리뷰 작성
+ * 3) 예약 등록 기능
+ * 		1. 시설 ID, 이용 희망일 입력
+ * 		2. 해당 일자에 해당 시설의 잔여 slot 출력
  */
 
 public class DB2025Team03_Manage {
@@ -25,7 +33,7 @@ public class DB2025Team03_Manage {
         slotController = new DB2025Team03_ControllerReservationSlot();
     }
     
-// 1) userId별 반려동물 관리(등록, 조회, 수정, 삭제)
+// 1) ControllerPet 객체인 petController 사용하여 userId별 반려동물 관리(등록, 조회, 수정, 삭제)
     
     // 반려동물 등록
     public void registerPet(int userId, String name, int age, String species) {
@@ -56,8 +64,8 @@ public class DB2025Team03_Manage {
     	petController.deletePet(userId, petId);
     }
     
-// 2) userId별 예약 관리(예약 내역 조회)
-    
+// 2) 예약 관리
+//    ControllerReservation 객체인 reservationController 사용하여 userId별 예약 내역 출력
     public void showReservations(int userId) {
     	System.out.println("\n==== 사용자 " + userId + "의 예약 내역 ====");
         List<DB2025Team03_ModelReservation> reservations = reservationController.searchByUserId(userId);  // ← 변경됨
@@ -73,7 +81,7 @@ public class DB2025Team03_Manage {
         }
     }
     
- //예약 등록
+//  ControllerReservationSlot 객체인 slotController 사용하여 userId별 예약 등록
     public void registerReservation(int userId, int facilityId, String date, String serviceType, int slotId) {
         reservationController.insertReservation(userId, facilityId, date, serviceType, slotId);
         slotController.markSlotAsReserved(slotId); //슬롯 상태 업데이트

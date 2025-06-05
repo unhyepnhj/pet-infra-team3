@@ -12,6 +12,7 @@ import javax.swing.table.TableCellRenderer;
 
 /*
  * JTable용 유틸리티 클래스
+ * 버튼 renderer, editor 구현
  */
 
 class ButtonRenderer extends JButton implements TableCellRenderer {	// 버튼 renedrer

@@ -1,13 +1,18 @@
 package model;
 
+/*
+ * ControllerFavorite 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelFavorite {
     private int userId;
     private int facilityId;
 
     /**
-     * @param userId      
-     * @param facilityId 
+     * @param userId      : 유저 ID
+     * @param facilityId  : 시설 ID
      */
+    
     public DB2025Team03_ModelFavorite(int userId, int facilityId) {
         this.userId = userId;
         this.facilityId = facilityId;

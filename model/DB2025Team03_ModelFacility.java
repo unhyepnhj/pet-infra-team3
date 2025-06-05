@@ -1,5 +1,9 @@
 package model;
 
+/*
+ * ControllerFacility 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelFacility {
     private int facilityId;
     private String name;
@@ -8,12 +12,13 @@ public class DB2025Team03_ModelFacility {
     private String openingHours;
 
     /**
-     * @param facilityId 
-     * @param name     
-     * @param address    
-     * @param category    
-     * @param openingHours
+     * @param facilityId : 시설 ID
+     * @param name     	 : 시설명
+     * @param address    : 시설 주소
+     * @param category   : 시설 유형(병원, 미용실, etc.)
+     * @param openingHours : 시설 오픈 시간
      */
+    
     public DB2025Team03_ModelFacility(int facilityId, String name, String address,
                                       String category, String openingHours) {
         this.facilityId = facilityId;

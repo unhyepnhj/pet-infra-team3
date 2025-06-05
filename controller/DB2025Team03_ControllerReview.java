@@ -7,6 +7,10 @@ import java.util.List;
 import model.DB2025Team03_ModelReview;
 import model.DB2025Team03_ModelReviewWithUser;
 
+/*
+ * DB2025Team03_Review 테이블에 접근하여 리뷰 관리
+ */
+
 public class DB2025Team03_ControllerReview {
     private Connection conn;
 
@@ -23,7 +27,7 @@ public class DB2025Team03_ControllerReview {
         }
     }
 
-    // 리뷰 추가
+    // INSERT
     public void insertReviewDB2025Team03(int userId, int facilityId, int rating, String content, Date date) {
         String sql = "INSERT INTO DB2025_Review (user_id, facility_id, rating, content, date) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -38,7 +42,7 @@ public class DB2025Team03_ControllerReview {
         }
     }
 
-    // 리뷰 삭제
+    // DELETE: 리뷰 아이디=reviewId인 리뷰 삭제
     public int deleteReviewDB2025Team03(int reviewId) {
         String sql = "DELETE FROM DB2025_Review WHERE review_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -50,7 +54,8 @@ public class DB2025Team03_ControllerReview {
         return 0;
     }
 
-    // 리뷰 내용 수정
+    // UPDATE
+    // 리뷰 아이디=reviewId인 리뷰의 내용을 newContent로 변경
     public void updateReviewContentDB2025Team03(int reviewId, String newContent) {
         String sql = "UPDATE DB2025_Review SET content = ? WHERE review_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -62,7 +67,7 @@ public class DB2025Team03_ControllerReview {
         }
     }
 
-    // 리뷰 평점 수정
+    // 리뷰 아이디=reviewId인 리뷰의 평점을 newRating으로 변경
     public void updateReviewRatingDB2025Team03(int reviewId, int newRating) {
         String sql = "UPDATE DB2025_Review SET rating = ? WHERE review_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -74,7 +79,8 @@ public class DB2025Team03_ControllerReview {
         }
     }
 
-    //특정 사용자 리뷰 조회
+    // 검색
+    // 유저 아이디=userId인 유저가 작성한 리뷰 조회
     public List<DB2025Team03_ModelReview> getReviewsByUserDB2025Team03(int userId) {
         String sql = "SELECT * FROM DB2025_Review WHERE user_id = ?";
         List<DB2025Team03_ModelReview> list = new ArrayList<>();
@@ -91,7 +97,7 @@ public class DB2025Team03_ControllerReview {
         return list;
     }
 
-    // 6/2 수정: 시설 ID로 조회
+    // 6/2 수정: 시설 ID로 시설별 리뷰 조회
     public List<DB2025Team03_ModelReviewWithUser> getReviewsByFacilityIdDB2025Team03(int facilityId) {
         String sql = "SELECT U.name, R.rating, R.content, R.date " +
                      "FROM DB2025_Review R " +
@@ -116,7 +122,7 @@ public class DB2025Team03_ControllerReview {
         return list;
     }
 
-    //사용자 이름으로 리뷰 검색
+    // 사용자 이름으로 해당 사용자가 작성한 리뷰 조회
     public List<DB2025Team03_ModelReviewWithUser> searchReviewsByUserNameDB2025Team03(String name) {
         String sql = "SELECT U.name, R.rating, R.content, R.date " +
                      "FROM DB2025_Review R " +

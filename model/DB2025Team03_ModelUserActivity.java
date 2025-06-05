@@ -1,10 +1,21 @@
 package model;
 
+/*
+ * ControllerUserActivity 클래스에서 사용할 getter, setter
+ */
+
 public class DB2025Team03_ModelUserActivity {
     private int userId;
     private String name;
     private int totalReservations;
     private int totalReviews;
+    
+    /**
+     * @param userId	: 사용자 ID
+     * @param name		: 사용자 이름
+     * @param totalReservations	: 총 예약 수
+     * @param totalReviews		: 작성한 리뷰 수
+     */
 
     public DB2025Team03_ModelUserActivity(int userId, String name, int totalReservations, int totalReviews) {
         this.userId = userId;

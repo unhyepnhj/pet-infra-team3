@@ -6,6 +6,10 @@ import java.util.List;
 
 import model.DB2025Team03_ModelFacility;
 
+/*
+ * DB2025Team03_Facility 테이블에 접근하여 시설 데이터 관리
+ */
+
 public class DB2025Team03_ControllerFacility {
     private Connection conn;
 
@@ -21,17 +25,8 @@ public class DB2025Team03_ControllerFacility {
             e.printStackTrace();
         }
     }
-    /*
-     * CREATE TABLE DB2025_Facility (
-    facility_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    address VARCHAR(200) NOT NULL,
-    category VARCHAR(50) NOT NULL,
-    opening_hours VARCHAR(50)
-	);
-     */
     
-    // 데이터 삽입
+    // INSERT
     public void insertFacilityDB2025Team03(int facility_id, String name, String address, String category, String opening_hours) {
         String sql = "INSERT INTO DB2025_Facility (facility_id, name, address, category, opening_hours) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,7 +46,7 @@ public class DB2025Team03_ControllerFacility {
         }
     }
     
-    // 데이터 삭제
+    // DELETE
     public void deleteFacilityDB2025Team03(int facility_id) {
         String sql = "DELETE FROM DB2025_Facility WHERE facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -67,7 +62,7 @@ public class DB2025Team03_ControllerFacility {
         }
     }
 
-    // update
+    // UPDATE
     public void updateNameDB2025Team03(int facility_id, String newName) { // 시설명 수정
         String sql = "UPDATE DB2025_Facility SET name = ? WHERE facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -78,6 +73,7 @@ public class DB2025Team03_ControllerFacility {
             e.printStackTrace();
         }
     } // end of updateName
+    
     public void updateAddressDB2025Team03(int facility_id, String newAddress) { // 시설 주소 수정
         String sql = "UPDATE DB2025_Facility SET address = ? WHERE facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -88,6 +84,7 @@ public class DB2025Team03_ControllerFacility {
             e.printStackTrace();
         }
     } // end of updateAddress
+    
     public void updateCategoryDB2025Team03(int facility_id, String newCategory) { // 시설 종류 수정
         String sql = "UPDATE DB2025_Facility SET category = ? WHERE facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -98,6 +95,7 @@ public class DB2025Team03_ControllerFacility {
             e.printStackTrace();
         }
     } // end of updateCategory
+    
     public void updateOpeningHoursDB2025Team03(int facility_id, String newOpeningHours) { // 시설 오픈 시간 수정
         String sql = "UPDATE DB2025_Facility SET opening_hours = ? WHERE facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -109,7 +107,8 @@ public class DB2025Team03_ControllerFacility {
         }
     } // end of updateOpeningHours
 
-    // search
+    // SEARCH - 검색 조건 분리: 시설명/주소/시설 유형/오픈 시간/평균 평점
+    
     public List<DB2025Team03_ModelFacility> searchByNameDB2025Team03(String name) { // 시설명으로 검색
         String sql = "SELECT * FROM DB2025_Facility WHERE name LIKE ?";
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
@@ -125,6 +124,7 @@ public class DB2025Team03_ControllerFacility {
         }
         return list;
     } // end of searchByName
+    
     public List<DB2025Team03_ModelFacility> searchByAddressDB2025Team03(String address) { // 시설 주소로 검색
         String sql = "SELECT * FROM DB2025_Facility WHERE address LIKE ?";
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
@@ -140,6 +140,7 @@ public class DB2025Team03_ControllerFacility {
         }
         return list;
     } // end of searchByAddress
+    
     public List<DB2025Team03_ModelFacility> searchByCategoryDB2025Team03(String category) { // 시설 종류로 검색
         String sql = "SELECT * FROM DB2025_Facility WHERE category LIKE ?";
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
@@ -155,8 +156,9 @@ public class DB2025Team03_ControllerFacility {
         }
         return list;
     } // end of searchByCategory
+    
     public List<DB2025Team03_ModelFacility> searchByOpeningBeforeDB2025Team03(String opening_hours) { // 시설 오픈 시간으로 검색
-        String sql = "SELECT * FROM DB2025_Facility WHERE opening_hours < ?";	// time시 이전에 여는 시설
+        String sql = "SELECT * FROM DB2025_Facility WHERE opening_hours < ?";	// time시에 운영 중인 시설
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, opening_hours);
@@ -199,7 +201,7 @@ public class DB2025Team03_ControllerFacility {
         );
     }
     
-    //평균 평점 조회(검색을 위해서 추가 했어요!)
+    //평균 평점 조회
     public List<DB2025Team03_ModelFacility> searchByMinAvgRatingDB2025Team03(double minRating) {
         String sql =
           "SELECT F.* " +

@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import model.DB2025Team03_ModelReservation;
 
+/*
+ * DB2025Team03_Reservation 테이블에 접근하여 예약 내역 관리
+ */
+
 public class DB2025Team03_ControllerReservation {
     private Connection conn;
 
@@ -37,7 +41,7 @@ public class DB2025Team03_ControllerReservation {
         }
     }
 
-    // UPDATE: 서비스 종류만 수정
+    // UPDATE: 서비스 종류
     public void updateServiceType(int reservationId, String newType) {
         String sql = "UPDATE DB2025_Reservation SET service_type = ? WHERE reservation_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -49,7 +53,7 @@ public class DB2025Team03_ControllerReservation {
         }
     }
     
-    //READ ALL
+    // READ ALL
     public List<DB2025Team03_ModelReservation> readAllReservations() {
         List<DB2025Team03_ModelReservation> list = new ArrayList<>();
         String sql = "SELECT * FROM DB2025_Reservation";
@@ -106,7 +110,7 @@ public class DB2025Team03_ControllerReservation {
         return list;
     }
     
-    // 2025.05.25 수정 - UserId로 예약 내역 검색
+    // 2025.05.25 수정 - UserId로 해당 유저가 예약한 내역 검색
     public List<DB2025Team03_ModelReservation> searchByUserId(int userId) {
         List<DB2025Team03_ModelReservation> list = new ArrayList<>();
         String sql = "SELECT * FROM DB2025_Reservation WHERE user_id = ?";

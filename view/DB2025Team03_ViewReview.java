@@ -24,14 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * 6/2 수정-시설별 리뷰 검색하고 출력하도록 수정
- * 주석 참고
+ * DB2025Team03_ControllerReview 클래스에 구현된 리뷰 관리 기능을 유저 인터페이스에 구현
  */
+
 public class DB2025Team03_ViewReview extends JFrame {
     private int userId;
     private final int facilityId;
     private final DB2025Team03_ControllerReview controller;
-
+    
+    // uid, fid 입력받는 생성자
     public DB2025Team03_ViewReview(int userId, int facilityId) {
         this.userId = userId;
         this.facilityId = facilityId;
@@ -39,7 +40,7 @@ public class DB2025Team03_ViewReview extends JFrame {
 
         setTitle("리뷰 작성");
         setSize(400, 300);
-        setAlwaysOnTop(true); // 6/2 수정: 팝업 위치 변경
+        setAlwaysOnTop(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -47,7 +48,9 @@ public class DB2025Team03_ViewReview extends JFrame {
 
         setVisible(true);
     }
-    public DB2025Team03_ViewReview(int facilityId) {	// 6/2 수정: 시설별 리뷰 검색용 생성자
+    
+    // 6/2 수정: 전역 uid 사용하므로 fid만 입력받는 생성자 추가하여 사용
+    public DB2025Team03_ViewReview(int facilityId) {
     	this.facilityId = facilityId;
         this.controller = new DB2025Team03_ControllerReview();
 
@@ -67,23 +70,23 @@ public class DB2025Team03_ViewReview extends JFrame {
     private void initUI() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // 별점 선택
+        // 별점 입력 기능: 1~5점 중 선택하여 리뷰와 함께 등록
         JPanel ratingPanel = new JPanel(new FlowLayout());
         JLabel ratingLabel = new JLabel("별점 (1~5):");
         JComboBox<Integer> ratingCombo = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5});
         ratingPanel.add(ratingLabel);
         ratingPanel.add(ratingCombo);
 
-        // 텍스트 입력
+        // 리뷰 내용 입력
         JTextArea contentArea = new JTextArea(8, 30);
         JScrollPane contentScroll = new JScrollPane(contentArea);
 
-        // 버튼
+        // 설정된 별점과 리뷰 등록
         JButton submitBtn = new JButton("리뷰 등록");
         submitBtn.addActionListener(e -> {
             int rating = (int) ratingCombo.getSelectedItem();
             String content = contentArea.getText().trim();
-
+            // 내용 없을 경우
             if (content.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "내용을 입력하세요.");
                 return;

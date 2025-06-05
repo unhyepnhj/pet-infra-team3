@@ -6,64 +6,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 
+/*
+ * DB2025Team03_ControllerFavorite 클래스에 구현된 좋아요 기능을 유저 인터페이스에 구현
+ */
+
 public class DB2025Team03_ViewFavorite extends JFrame {
     private JTextField userIdField;
     private JTextField facilityIdField;
     private JTextArea outputArea;
 
-//    public DB2025Team03_ViewFavorite() {
-//        setTitle("관심 시설 기능");
-//        setSize(500, 400);
-//        setLayout(new BorderLayout());
-//        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//
-//        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
-//        inputPanel.add(new JLabel("User ID:"));
-//        userIdField = new JTextField();
-//        inputPanel.add(userIdField);
-//
-//        inputPanel.add(new JLabel("Facility ID:"));
-//        facilityIdField = new JTextField();
-//        inputPanel.add(facilityIdField);
-//
-//        add(inputPanel, BorderLayout.NORTH);
-//
-//        JPanel buttonPanel = new JPanel(new FlowLayout());
-//        JButton addBtn = new JButton("좋아요 추가");
-//        JButton deleteBtn = new JButton("좋아요 삭제");
-//        JButton viewBtn = new JButton("내 좋아요 목록");
-//        JButton recommendBtn = new JButton("추천 시설 보기");
-//
-//        buttonPanel.add(addBtn);
-//        buttonPanel.add(deleteBtn);
-//        buttonPanel.add(viewBtn);
-//        buttonPanel.add(recommendBtn);
-//
-//        add(buttonPanel, BorderLayout.CENTER);
-//
-//        outputArea = new JTextArea();
-//        outputArea.setEditable(false);
-//        JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
-//        scrollPane.setPreferredSize(new Dimension(0, 200)); 	// 높이 150
-//        add(scrollPane, BorderLayout.SOUTH);
-//
-//        // 이벤트 리스너
-//        addBtn.addActionListener(e -> addFavorite());
-//        deleteBtn.addActionListener(e -> deleteFavorite());
-//        viewBtn.addActionListener(e -> viewFavorites());
-//        recommendBtn.addActionListener(e -> viewRecommended());
-//
-//        setVisible(true);
-//    }
-    
-    // 6/2 수정-uid 전달받는 생성자(allGui용)
+    // 6/2 수정: 기본 생성자를 allGui 호출용 uid 전달받는 생성자로 변경
     public DB2025Team03_ViewFavorite(int userId) {
     	setTitle("관심 시설 기능");
         setSize(500, 400);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        // uid 입력 필드 -> 파라미터로 전달된 대로 보여주게 변경
+        // 기존 uid 입력 필드에서 -> 파라미터로 전달된 uid 출력하도록 변경
         JPanel inputPanel = new JPanel(new GridLayout(2, 2));
         
         inputPanel.add(new JLabel("현재 로그인 ID:"));
@@ -88,7 +47,8 @@ public class DB2025Team03_ViewFavorite extends JFrame {
         buttonPanel.add(recommendBtn);
 
         add(buttonPanel, BorderLayout.CENTER);
-
+        
+        // 좋아요 조회/등록/삭제 업데이트 내역 표시 영역
         outputArea = new JTextArea();
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);	// 6/2 수정
@@ -144,7 +104,7 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     }
 
     // 내 좋아요 목록 조회
-    public void viewFavorites(int userId) {	// public으로 변경했습니다
+    public void viewFavorites(int userId) {
         String sql = "SELECT facility_id FROM DB2025_Favorite WHERE user_id = ?";
         try (
             Connection conn = DriverManager.getConnection(
@@ -172,7 +132,6 @@ public class DB2025Team03_ViewFavorite extends JFrame {
 
     // 추천 기능 (좋아요 많은 상위 5개 시설)
     private void viewRecommended() {
-        System.out.println("추천 버튼 클릭됨");  // 1단계 확인
     
         String sql =
         "SELECT F.name, COUNT(*) AS cnt " +
@@ -188,8 +147,6 @@ public class DB2025Team03_ViewFavorite extends JFrame {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
     
-            System.out.println("쿼리 실행 성공");  // 2단계 확인
-    
             StringBuilder sb = new StringBuilder("추천 시설 TOP 5:\n");
             boolean hasResult = false;
     
@@ -201,10 +158,8 @@ public class DB2025Team03_ViewFavorite extends JFrame {
     
             if (!hasResult) {
                 outputArea.setText("추천할 시설이 없습니다.");
-                System.out.println("추천할 시설 없음 출력됨");  // 3단계 확인
             } else {
                 outputArea.setText(sb.toString());
-                System.out.println("추천 결과 출력됨");  // 4단계 확인
             }
     
         } catch (SQLException e) {

@@ -6,6 +6,10 @@ import java.util.List;
 
 import model.DB2025Team03_ModelFavorite;
 
+/*
+ * DB2025Team03_Favorite 테이블에 접근하여 좋아요 내역 관리
+ */
+
 public class DB2025Team03_ControllerFavorite {
     private Connection conn;
 
@@ -22,7 +26,7 @@ public class DB2025Team03_ControllerFavorite {
         }
     }
 
-    // 데이터 삽입
+    // INSERT
     public void insertFavoriteDB2025Team03(int user_id, int facility_id) {
         String sql = "INSERT INTO DB2025_Favorite (user_id, facility_id) VALUES (?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -39,7 +43,7 @@ public class DB2025Team03_ControllerFavorite {
         }
     }
 
-    // 데이터 삭제
+    // DELETE
     public void deleteFavoriteDB2025Team03(int user_id, int facility_id) {
         String sql = "DELETE FROM DB2025_Favorite WHERE user_id = ? AND facility_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -56,9 +60,9 @@ public class DB2025Team03_ControllerFavorite {
         }
     }
 
-    // update - 필요없을 듯(insert/delete만 있으면 됨)
+    // 좋아요 기능은 update 필요 X
 
-    // search
+    // SEARCH
     public List<DB2025Team03_ModelFavorite> searchByUserIdDB2025Team03(int user_id) { // 유저가 좋아요한 목록 조회
         String sql = "SELECT * FROM DB2025_Favorite WHERE user_id = ?";
         List<DB2025Team03_ModelFavorite> list = new ArrayList<>();
@@ -74,6 +78,7 @@ public class DB2025Team03_ControllerFavorite {
         }
         return list;
     } // end of searchByUserId
+    
     public List<DB2025Team03_ModelFavorite> searchByFacilityIdDB2025Team03(int facility_id) { // 해당 시설을 좋아요한 유저 목록 조회
         String sql = "SELECT * FROM DB2025_Favorite WHERE facility_id = ?";
         List<DB2025Team03_ModelFavorite> list = new ArrayList<>();
