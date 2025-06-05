@@ -158,10 +158,11 @@ public class DB2025Team03_ControllerFacility {
     } // end of searchByCategory
     
     public List<DB2025Team03_ModelFacility> searchByOpeningBeforeDB2025Team03(String opening_hours) { // 시설 오픈 시간으로 검색
-        String sql = "SELECT * FROM DB2025_Facility WHERE opening_hours < ?";	// time시에 운영 중인 시설
+        String sql = "SELECT * FROM DB2025_Facility WHERE LEFT(opening_hours, 5) <= ? AND SUBSTRING(opening_hours, 7, 5) >= ?";	//검색한 시간에 여는 시설
         List<DB2025Team03_ModelFacility> list = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, opening_hours);
+            ps.setString(2, opening_hours);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapRow(rs));
@@ -201,7 +202,7 @@ public class DB2025Team03_ControllerFacility {
         );
     }
     
-    //평균 평점 조회
+    //평이 좋은 시설 검색 (평점이 4점 이상인 시설들) => View 사용
     public List<DB2025Team03_ModelFacility> searchByMinAvgRatingDB2025Team03(double minRating) {
         String sql =
           "SELECT F.* " +
